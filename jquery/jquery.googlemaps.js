@@ -109,12 +109,11 @@
 		},
 		Geocode: function(string){
 			$.googlemaps.geocoder = new google.maps.Geocoder();
-			$.googlemaps.geocoder.geocode({'address': string}, function(results, status){
+			return $.googlemaps.geocoder.geocode({address: string}, function(results, status){
 				if(status == google.maps.GeocoderStatus.OK){
-					return result;
+					$.googlemaps.results = results;
 				}else{
 					alert("Geocode was not successful for the following reason: " + status);
-					return false
 				}
 			});
 		},
@@ -139,14 +138,19 @@
 				if($.isArray(marker.position)){
 					marker.position = $.googlemaps.LatLng(marker.position);
 				}else{
+					console.log(marker);
 					var results = $.googlemaps.Geocode(marker.position);
 					marker.position = results.geometry.location;
 				}
 				marker.map = $.googlemaps.map;
 				var marked = new google.maps.Marker(marker);
 				if(marker.info){
-					$(marker.info).hide();
-					var info = new google.maps.InfoWindow({content: $(marker.info).html()});
+					if((marker.info).match('^#')){
+						$(marker.info).hide();
+						var info = new google.maps.InfoWindow({content: $(marker.info).html()});
+					}else{
+						var info = new google.maps.InfoWindow({content: marker.info});
+					}
 					var oldcenter = $.googlemaps.map.getCenter();
 					google.maps.event.addListener(marked, 'click', function(){
 						info.open($.googlemaps.map, marked);
@@ -263,6 +267,12 @@
 			if(directions.display){
 				DirectionsDisplay.setPanel($(directions.display)[0]);
 			}
+			//$.googlemaps.Geocode(directions.origin);
+			//console.log($.googlemaps.results);
+			//directions.origin = $.googlemaps.results.geometry.location;
+			
+			directions.destination = $.googlemaps.Coords(directions.destination);
+			
 			var route = {
 				origin: directions.origin,
 				destination: directions.destination,
@@ -282,6 +292,7 @@
 			type: google.maps.MapTypeId.ROADMAP
 		},
 		center: {},
-		geocoder: {}
+		geocoder: {},
+		results: {}
 	};
 })(jQuery);
