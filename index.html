@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title><!-- Insert your title here --></title>
+	<script type="text/javascript" src="jquery/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&language=en"></script>
+	<script type="text/javascript" src="jquery/jquery.googlemaps.js"></script>
+	<style>
+		body {font: 12px Verdana;}
+		#map {height: 300px;}
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+	<div id="info">This is test info!</div>
+    <script type="text/javascript">
+		o = {
+			// Default initialisation options.
+			center: [52.257347,0.054988], // Array for LatLng, or String for Geocoding
+			zoom: 14,
+			type: 'SATELLITE', // ROADMAP, HYBRID, SATELLITE, TERRAIN
+			// Markers Options
+			markers: [
+				{
+					// Required
+					position: [52.257347,0.054988],
+					title: 'This is a test marker',
+					// Optional
+					clickable: true,
+					dragable: false,
+					// Info Window
+					info: '#info'
+				}
+			]
+		};
+		$(document).ready(function(){
+			$('#map').googlemaps(o);
+		});
+	</script>
+</body>
+</html>
