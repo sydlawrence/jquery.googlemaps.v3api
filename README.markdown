@@ -1,5 +1,7 @@
 # Google Maps API v3 for jQuery
 
+This is currently a very simple implementation of the API in jQuery.
+
 ##Current status:
 
 * Maps:			Done, tested.
