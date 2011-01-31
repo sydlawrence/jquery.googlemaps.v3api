@@ -43,25 +43,23 @@
 			}
 		};
 		o = {
-			// Default initialisation options.
-			center: l.ely.coords, // Array for LatLng, or String for Geocoding
-			zoom: 14,
-			type: 'SATELLITE', // ROADMAP, HYBRID, SATELLITE, TERRAIN
-			// Markers Options
-			markers: [
-				{
-					// Required
-					position: l.ely.coords,
-					title: l.ely.title,
-					// Optional
-					icon: '',
-					shadow: '',
-					clickable: true,
-					dragable: false,
-					// Info Window
-					info: l.ely.address + "\n" + l.ely.contact
-				}
-			]
+	// Rectangle Options
+	rectangles: [
+		{
+			// Required
+			bounds: [
+				[28.70, -127.50],
+				[48.85, -55.90]
+			],
+			fillColor: '#ff0000',
+			fillOpacity: 0.5,
+			strokeColor: '#00ff00',
+			strokeOpacity: 1,
+			strokeWeight: 2,
+			// Optional
+			clickable: true
+		}
+	]
 			
 		};
 		$(document).ready(function(){

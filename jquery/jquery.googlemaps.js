@@ -41,15 +41,8 @@
 		 */
 		Init: function(o){
 			// Set center
-			if($.isArray(o.center)){
-				$.googlemaps.center = $.googlemaps.LatLng(o.center);
-				$.googlemaps.map.setCenter($.googlemaps.center);
-			}else if(typeof o.center == 'string'){
-				var results = $.googlemaps.Geocode(o.center);
-				$.googlemaps.center = results.geometry.location;
-				$.googlemaps.map.setCenter($.googlemaps.center);
-			}else{
-				$.googlemaps.center = o.center;
+			if(o.center){
+				$.googlemaps.center = $.googlemaps.Coords(o.center);
 				$.googlemaps.map.setCenter($.googlemaps.center);
 			}
 			// Set zoom
@@ -109,30 +102,53 @@
 		},
 		Geocode: function(string){
 			$.googlemaps.geocoder = new google.maps.Geocoder();
-			return $.googlemaps.geocoder.geocode({address: string}, function(results, status){
+			var output;
+			$.googlemaps.geocoder.geocode({address: string}, function(results, status){
 				if(status == google.maps.GeocoderStatus.OK){
-					$.googlemaps.results = results;
+					output = results;
 				}else{
 					alert("Geocode was not successful for the following reason: " + status);
 				}
 			});
 		},
+		/**
+		 * @param array {array} Array of one set of coords
+		 */
 		LatLng: function(array){
 			return new google.maps.LatLng(array[0], array[1]);
 		},
+		/**
+		 * @param array {array} Array of two sets of coords, stored in arrays
+		 */
 		LatLngBounds: function(array){
+			array[0] = $.googlemaps.LatLng(array[0]);
+			array[1] = $.googlemaps.LatLng(array[1]);
 			console.log(new google.maps.LatLngBounds(array[0], array[1]));
 			return new google.maps.LatLngBounds(array[0], array[1]);
 		},
+		/**
+		 * $.googlemaps.Coords
+		 * 
+		 * @param data {array} Array of coords
+		 * @param data {string} Address as string
+		 * @param data {LatLng} Google LatLng object
+		 *
+		 * @returns {object} Google LatLng object
+		 */
 		Coords: function(data){
 			if($.isArray(data)){
 				data = $.googlemaps.LatLng(data);
-			}else{
+			}else if(typeof o.center == 'string'){
 				var results = $.googlemaps.Geocode(data);
 				data = results.geometry.location;
+			}else{
+				data = o.center;
 			}
 			return data;
 		},
+		/**
+		 * @param markers {array} Array of objects containing Marker parameters
+		 */
 		Marker: function(markers){
 			$.each(markers, function(i, marker){
 				if($.isArray(marker.position)){
@@ -193,16 +209,8 @@
 		},
 		Rectangle: function(rectangles){
 			$.each(rectangles, function(i, rectangle){
-				$.each(rectangle.bounds, function(i, point){
-					if($.isArray(point)){
-						rectangle.bounds[i] = $.googlemaps.LatLngBounds(point);
-						console.log(point);
-					}else{
-						var results = $.googlemaps.Geocode(point);
-						rectangle.bounds[i] = results.geometry.location;
-					}
-				});
-				rectangle.map = $.googlemaps.map;
+				rectangles.bounds = $.googlemaps.LatLngBounds(rectangle.bounds);
+				rectangles.map = $.googlemaps.map;
 				plotted = new google.maps.Rectangle(rectangle);
 			});
 		},
