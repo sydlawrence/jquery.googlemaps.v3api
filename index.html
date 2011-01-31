@@ -16,51 +16,11 @@
 	<div id="dir"></div>
 	<div id="info">This is test info!</div>
     <script type="text/javascript">
-		l = {
-			ely: {
-				title: 'Potter Group, Ely',
-				address: '<address>Road and Rail Distribution Centre,<br />Queen Adelaide Way,<br />Ely,<br />Cambridgeshire,<br />CB7 4UB</address>',
-				contact: '<p>Tel: 01353 662345</p>',
-				coords: [52.40364, 0.296266],
-				tab: 'tab-ely',
-				selectOpt: 'select-ely'
-			},
-			droitwich: {
-				title: 'Potter Group, Droitwich',
-				address: '<address>Site 7, Kidderminster Road,<br />Cutnall Green,<br />Droitwich,<br />Worcestershire,<br />WR9 0NS</address>',
-				contact: '<p>Tel: 0151 290 0671</p><p>Fax: 0151 289 1310</p>',
-				coords: [52.32751,-2.17834],
-				tab: 'tab-droitwich',
-				selectOpt: 'select-droitwich'
-			},
-			knowsley: {
-				title: 'Potter Group, Knowsley',
-				address: '<address>Rail Freight Terminal,<br />Woodward Road,<br />Knowsley Industrial Park,<br />Merseyside,<br />L33 7UY</address>',
-				contact: '<p>Tel: 0151 290 0671</p><p>Fax: 0151 289 1310</p>',
-				coords: [53.48940,-2.85236],
-				tab: 'tab-knowsley',
-				selectOpt: 'select-knowsley'
-			}
-		};
 		o = {
-	// Rectangle Options
-	rectangles: [
-		{
-			// Required
-			bounds: [
-				[28.70, -127.50],
-				[48.85, -55.90]
-			],
-			fillColor: '#ff0000',
-			fillOpacity: 0.5,
-			strokeColor: '#00ff00',
-			strokeOpacity: 1,
-			strokeWeight: 2,
-			// Optional
-			clickable: true
-		}
-	]
-			
+			// Default initialisation options.
+			center: [52.40364, 0.29626], // Array for LatLng, or String for Geocoding
+			zoom: 14,
+			type: 'ROADMAP', // ROADMAP, HYBRID, SATELLITE, TERRAIN
 		};
 		$(document).ready(function(){
 			$('#map').googlemaps(o);

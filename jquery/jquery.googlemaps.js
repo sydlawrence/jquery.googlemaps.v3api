@@ -15,7 +15,7 @@
 		o = $.extend({}, $.googlemaps.defaults, o);
 		// Geocode/LatLng the center
 		if($.isArray(o.center)){
-			o.center = $.googlemaps.LatLng(o.center);
+			o.center = $.googlemaps.Coords(o.center);
 		}else{
 			var results = $.googlemaps.Geocode(o.center);
 			o.center = results.geometry.location;
@@ -42,7 +42,7 @@
 		Init: function(o){
 			// Set center
 			if(o.center){
-				$.googlemaps.center = $.googlemaps.Coords(o.center);
+				$.googlemaps.center = o.center;
 				$.googlemaps.map.setCenter($.googlemaps.center);
 			}
 			// Set zoom
@@ -123,7 +123,6 @@
 		LatLngBounds: function(array){
 			array[0] = $.googlemaps.LatLng(array[0]);
 			array[1] = $.googlemaps.LatLng(array[1]);
-			console.log(new google.maps.LatLngBounds(array[0], array[1]));
 			return new google.maps.LatLngBounds(array[0], array[1]);
 		},
 		/**
@@ -131,7 +130,6 @@
 		 * 
 		 * @param data {array} Array of coords
 		 * @param data {string} Address as string
-		 * @param data {LatLng} Google LatLng object
 		 *
 		 * @returns {object} Google LatLng object
 		 */
