@@ -20,7 +20,7 @@ o = {
 		}
 	],
 	// Polyline Options
-	polyline: [
+	polylines: [
 		{
 			// Required
 			path: [
@@ -36,13 +36,14 @@ o = {
 		}
 	],
 	// Polygon Options
-	polygon: [
+	polygons: [
 		{
-			// Required
+			// Required, must start and end at same coords
 			paths: [
 				[52.257347,0.054988],
 				[52.257356,0.054988],
-				[52.25800,0.054988]
+				[52.258000,0.054988],
+				[52.257347,0.054988]
 			],
 			fillColor: '',
 			fillOpacity: 1,
@@ -54,8 +55,22 @@ o = {
 			geodesic: false
 		}
 	],
+	// Rectangle Options
+	rectangles: [
+		{
+			// Required
+			bounds: [52.257347,0.054988],
+			fillColor: '',
+			fillOpacity: 1,
+			strokeColor: '',
+			strokeOpacity 1,
+			strokeWeight: 2,
+			// Optional
+			clickable: true
+		}
+	],
 	// Circle Options
-	circle: [
+	circles: [
 		{
 			// Required
 			center: [52.257347,0.054988],
@@ -92,8 +107,19 @@ o = {
 		// Required
 		origin: [52.257347,0.054988], // Array for LatLng or String for Geocoding
 		destination: [52.257356,0.054988], // Array for LatLng or String for Geocoding
+		display: {
+			id: '', // ID of output panel
+			width: 250 // Width of output panel
+		},
 		// Optional
+		waypoints: [
+			{
+				location: [52.257356,0.054988], // Array for LatLng or string for Geocoding
+				stopover: false
+			}
+		],
 		travelMode: 'DRIVING', // DRIVING, BICYCLING, WALKING
-		unitSystem: 'IMPERIAL' // IMPERIAL, METRIC
+		unitSystem: 'IMPERIAL', // IMPERIAL, METRIC
+		showMarkers: false
 	}
 };

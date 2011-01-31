@@ -1,0 +1,20 @@
+# Google Maps API v3 for jQuery
+
+##Current status:
+
+* Maps:			Done, tested.
+* Markers:		Done, tested.
+* InfoWindows:	Done, tested.
+* Polylines:	Done,
+* Polygons:		Done,
+* Rectangles:	Done,
+* Circles:		Done,
+* Layers:		Todo,
+* Streetview:	Todo,
+* Directions:	Todo,
+
+
+##Refactor Todo's:
+
+* Pull out repetative coords creation into Coords function:		Part done,
+* Directions show markers!

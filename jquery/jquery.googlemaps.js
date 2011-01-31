@@ -21,6 +21,7 @@
 	$.googlemaps = {
 		// Functions
 		Init: function(o){
+			//console.log($.googlemaps.map);
 			// Set center
 			if($.isArray(o.center)){
 				$.googlemaps.center = $.googlemaps.LatLng(o.center);
@@ -47,6 +48,33 @@
 				}
 				$.googlemaps.Marker(o.markers);
 			}
+			if(o.polylines){
+				if(!$.isArray(o.polylines)){
+					o.polylines = [o.polylines];
+				}
+				$.googlemaps.Polyline(o.polylines);
+			}
+			if(o.polygons){
+				if(!$.isArray(o.polygons)){
+					o.polygons = [o.polygons];
+				}
+				$.googlemaps.Polygon(o.polygons);
+			}
+			if(o.rectangles){
+				if(!$.isArray(o.rectangles)){
+					o.rectangles = [o.rectangles];
+				}
+				$.googlemaps.Rectangle(o.rectangles);
+			}
+			if(o.circles){
+				if(!$.isArray(o.circles)){
+					o.circles = [o.circles];
+				}
+				$.googlemaps.Circle(o.circles);
+			}
+			if(o.directions){
+				$.googlemaps.Directions(o.directions);
+			}
 		},
 		Geocode: function(string){
 			$.googlemaps.geocoder = new google.maps.Geocoder();
@@ -61,6 +89,18 @@
 		},
 		LatLng: function(array){
 			return new google.maps.LatLng(array[0], array[1]);
+		},
+		LatLngBounds: function(array){
+			return new google.maps.LatLngBounds(array[0], array[1]);
+		},
+		Coords: function(data){
+			if($.isArray(data)){
+				data = $.googlemaps.LatLng(data);
+			}else{
+				var results = $.googlemaps.Geocode(data);
+				data = results.geometry.location;
+			}
+			return data;
 		},
 		Marker: function(markers){
 			$.each(markers, function(i, marker){
@@ -85,8 +125,94 @@
 				}
 			});
 		},
-		InfoWindow: function(marker, info){
-			var info = new google.maps.InfoWindow();
+		Polyline: function(polylines){
+			$.each(polylines, function(i, polyline){
+				// Sort all paths into array of LatLngs
+				$.each(path, function(i, p){
+					if($.isArray(p)){
+						p = $.googlemaps.LatLng(p);
+					}else{
+						var results = $.googlemaps.Geocode(p);
+						p = results.geometry.location;
+					}
+				});
+				polyline.map = $.googlemaps.map;
+				var plotted = new google.maps.Polyline(polyline);
+			});
+		},
+		Polygon: function(polygons){
+			$.each(polygons, function(i, polygon){
+				// Sort all paths into array of LatLngs
+				$.each(paths, function(i, p){
+					if($.isArray(p)){
+						p = $.googlemaps.LatLng(p);
+					}else{
+						var results = $.googlemaps.Geocode(p);
+						p = results.geometry.location;
+					}
+				});
+				polygon.map = $.googlemaps.map;
+				var plotted = new google.maps.Polygon(polygon);
+			});
+		},
+		Rectangle: function(rectangles){
+			$.each(rectangles, function(i, rectangle){
+				if($.isArray(rectangle.bounds)){
+					rectangle.bounds = $.googlemaps.LatLng(rectangle.bounds);
+				}else{
+					var results = $.googlemaps.Geocode(rectangle.bounds);
+					rectangle.bounds = results.geometry.location;
+				}
+				rectangle.map = $.googlemaps.map;
+				plotted = new google.maps.Rectangle(rectangle);
+			});
+		},
+		Circle: function(circles){
+			$.each(circles, function(i, circle){
+				if($.isArray(circle.center)){
+					circle.center = $.googlemaps.LatLng(circle.center);
+				}else{
+					var results = $.googlemaps.Geocode(circle.center);
+					circle.center = results.geometry.location;
+				}
+				circle.map = $.googlemaps.map;
+				plotted = new google.maps.Circle(circle);
+			});
+		},
+		Directions: function(directions){
+			var DirectionsService= new google.maps.DirectionsService();
+			var DirectionsDisplay = new google.maps.DirectionsRenderer();
+			// Set modes and Units
+			if(directions.travelMode == 'DRIVING'){
+				directions.travelMode = google.maps.DirectionsTravelMode.DRIVING;
+			}else if(directions.travelMode == 'BICYCLING'){
+				directions.travelMode = google.maps.DirectionsTravelMode.BICYCLING;
+			}else if(directions.travelMode == 'WALKING'){
+				directions.travelMode = google.maps.DirectionsTravelMode.WALKING;
+			}
+			if(directions.unitSystem == 'IMPERIAL'){
+				directions.unitSystem = google.maps.DirectionsUnitSystem.IMPERIAL;
+			}else if(directions.unitSystem == 'METRIC'){
+				directions.unitSystem = google.maps.DirectionsUnitSystem.METRIC;
+			}
+			DirectionsDisplay.setMap($.googlemaps.map);
+			// Set output panel details
+			if(directions.display){
+				DirectionsDisplay.setPanel($(directions.display.id));
+				$(directions.display.id).hide();
+			}
+			DirectionsService.route(directions, function(result, status){
+				if(status == google.maps.DirectionsStatus.OK){
+					DirectionsDisplay.setDirections(response);
+					if(directions.display){
+						var mapDiv = $.googlemaps.map.getDiv();
+						mapDiv.width(function(i, w){
+							return (w - directions.display.width);
+						});
+						$(directions.display.id).show();
+					}
+				}
+			});
 		},
 		// Objects and Params
 		defaults: {
@@ -95,7 +221,6 @@
 			type: google.maps.MapTypeId.ROADMAP
 		},
 		center: {},
-		geocoder: {},
-		
+		geocoder: {}
 	};
 })(jQuery);
