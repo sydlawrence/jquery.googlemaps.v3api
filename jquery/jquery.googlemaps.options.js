@@ -28,7 +28,7 @@ o = {
 				[52.257356,0.054988]
 			],
 			strokeColor: '',
-			strokeOpacity 1,
+			strokeOpacity: 1,
 			strokeWeight: 2,
 			// Optional
 			clickable: true,
@@ -48,7 +48,7 @@ o = {
 			fillColor: '',
 			fillOpacity: 1,
 			strokeColor: '',
-			strokeOpacity 1,
+			strokeOpacity: 1,
 			strokeWeight: 2,
 			// Optional
 			clickable: true,
@@ -59,11 +59,14 @@ o = {
 	rectangles: [
 		{
 			// Required
-			bounds: [52.257347,0.054988],
+			bounds: [
+				[52.257347,0.054988],
+				[51.257347,0.054666]
+			],
 			fillColor: '',
 			fillOpacity: 1,
 			strokeColor: '',
-			strokeOpacity 1,
+			strokeOpacity: 1,
 			strokeWeight: 2,
 			// Optional
 			clickable: true
@@ -100,17 +103,22 @@ o = {
 	],
 	// Streetview Panoramas
 	streetview: {
-		position: [52.257347,0.054988]
+		// Required
+		id: '', // ID of the div to caontain the streetview
+		position: [52.257347,0.054988],
+		// Optional
+		pov: {
+			heading: 34,
+			pitch: 10,
+			zoom: 1
+		}
 	},
 	// Directions Overlay
 	directions: {
 		// Required
 		origin: [52.257347,0.054988], // Array for LatLng or String for Geocoding
 		destination: [52.257356,0.054988], // Array for LatLng or String for Geocoding
-		display: {
-			id: '', // ID of output panel
-			width: 250 // Width of output panel
-		},
+		display: '', // ID of div to contain results
 		// Optional
 		waypoints: [
 			{

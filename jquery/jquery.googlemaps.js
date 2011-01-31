@@ -1,27 +1,45 @@
+/**
+ * Google Maps API v3
+ * A jQuery wrapper function for the new API
+ */
 (function($){
 	$.fn.googlemaps = function(o){
+		// Set the MapTypeId before anything else
 		if(o.type){
 			if(o.type == 'ROADMAP') o.type = google.maps.MapTypeId.ROADMAP;
 			if(o.type == 'HYBRID') o.type = google.maps.MapTypeId.HYBRID;
 			if(o.type == 'SATELLITE') o.type = google.maps.MapTypeId.SATELLITE;
 			if(o.type == 'TERRAIN') o.type = google.maps.MapTypeId.TERRAIN;
 		}
+		// Extend the options with the defaults
 		o = $.extend({}, $.googlemaps.defaults, o);
+		// Geocode/LatLng the center
 		if($.isArray(o.center)){
 			o.center = $.googlemaps.LatLng(o.center);
 		}else{
 			var results = $.googlemaps.Geocode(o.center);
 			o.center = results.geometry.location;
 		}
+		// Initiate a Google Map for each element passed
 		return this.each(function(){
 			$.googlemaps.map = new google.maps.Map(this, o);
+			// Initialize any other options into the map
 			$.googlemaps.Init(o);
 		});
 	};
 	$.googlemaps = {
-		// Functions
+		/**
+		 * Functions are denoted by a Capital first letter
+		 * storage objects, arrays etc are lower case
+		 */
+		/**
+		 * Init
+		 *
+		 * Function to initialise any extra options that have been supplied
+		 * @param o {object} The options object. Contains objects, arrays,
+		 *   strings and integers
+		 */
 		Init: function(o){
-			//console.log($.googlemaps.map);
 			// Set center
 			if($.isArray(o.center)){
 				$.googlemaps.center = $.googlemaps.LatLng(o.center);
@@ -42,36 +60,49 @@
 			if(o.type){
 				$.googlemaps.map.setMapTypeId(o.type);
 			}
+			// Set any Markers
 			if(o.markers){
 				if(!$.isArray(o.markers)){
 					o.markers = [o.markers];
 				}
 				$.googlemaps.Marker(o.markers);
 			}
+			// Plot any Polylines
 			if(o.polylines){
 				if(!$.isArray(o.polylines)){
 					o.polylines = [o.polylines];
 				}
 				$.googlemaps.Polyline(o.polylines);
 			}
+			// Plot any Polygons
 			if(o.polygons){
 				if(!$.isArray(o.polygons)){
 					o.polygons = [o.polygons];
 				}
 				$.googlemaps.Polygon(o.polygons);
 			}
+			// Plot any Rectangles
 			if(o.rectangles){
 				if(!$.isArray(o.rectangles)){
 					o.rectangles = [o.rectangles];
 				}
 				$.googlemaps.Rectangle(o.rectangles);
 			}
+			// Plot any Circles
 			if(o.circles){
 				if(!$.isArray(o.circles)){
 					o.circles = [o.circles];
 				}
 				$.googlemaps.Circle(o.circles);
 			}
+			// Plot any Layers
+			if(o.layers){
+				if(!$.isArray(o.layers)){
+					o.layers = [o.layers]
+				}
+				$.googlemaps.Layer(o.layers);
+			}
+			// Plot any Directions
 			if(o.directions){
 				$.googlemaps.Directions(o.directions);
 			}
@@ -91,6 +122,7 @@
 			return new google.maps.LatLng(array[0], array[1]);
 		},
 		LatLngBounds: function(array){
+			console.log(new google.maps.LatLngBounds(array[0], array[1]));
 			return new google.maps.LatLngBounds(array[0], array[1]);
 		},
 		Coords: function(data){
@@ -128,12 +160,12 @@
 		Polyline: function(polylines){
 			$.each(polylines, function(i, polyline){
 				// Sort all paths into array of LatLngs
-				$.each(path, function(i, p){
-					if($.isArray(p)){
-						p = $.googlemaps.LatLng(p);
+				$.each(polyline.path, function(i, path){
+					if($.isArray(path)){
+						polyline.path[i] = $.googlemaps.LatLng(path);
 					}else{
-						var results = $.googlemaps.Geocode(p);
-						p = results.geometry.location;
+						var results = $.googlemaps.Geocode(path);
+						polyline.path[i] = results.geometry.location;
 					}
 				});
 				polyline.map = $.googlemaps.map;
@@ -143,12 +175,12 @@
 		Polygon: function(polygons){
 			$.each(polygons, function(i, polygon){
 				// Sort all paths into array of LatLngs
-				$.each(paths, function(i, p){
-					if($.isArray(p)){
-						p = $.googlemaps.LatLng(p);
+				$.each(polygon.paths, function(i, path){
+					if($.isArray(path)){
+						polygon.paths[i] = $.googlemaps.LatLng(path);
 					}else{
-						var results = $.googlemaps.Geocode(p);
-						p = results.geometry.location;
+						var results = $.googlemaps.Geocode(path);
+						polygon.paths[i] = results.geometry.location;
 					}
 				});
 				polygon.map = $.googlemaps.map;
@@ -157,12 +189,15 @@
 		},
 		Rectangle: function(rectangles){
 			$.each(rectangles, function(i, rectangle){
-				if($.isArray(rectangle.bounds)){
-					rectangle.bounds = $.googlemaps.LatLng(rectangle.bounds);
-				}else{
-					var results = $.googlemaps.Geocode(rectangle.bounds);
-					rectangle.bounds = results.geometry.location;
-				}
+				$.each(rectangle.bounds, function(i, point){
+					if($.isArray(point)){
+						rectangle.bounds[i] = $.googlemaps.LatLngBounds(point);
+						console.log(point);
+					}else{
+						var results = $.googlemaps.Geocode(point);
+						rectangle.bounds[i] = results.geometry.location;
+					}
+				});
 				rectangle.map = $.googlemaps.map;
 				plotted = new google.maps.Rectangle(rectangle);
 			});
@@ -179,9 +214,30 @@
 				plotted = new google.maps.Circle(circle);
 			});
 		},
+		Layer: function(layers){
+			$.each(layers, function(i, layer){
+				layer.map = $.googlemaps.map;
+				if(layers.type == 'bicycling'){
+					var layer = new google.maps.BicyclingLayer();
+					layer.setMap(layer.map);
+				}else if(layers.type == 'traffic'){
+					var layer = new google.maps.TrafficLayer();
+					layer.setMap(layer.map);
+				}else if(layers.type == 'fusion'){
+					// Not implemented yet!
+				}else if(layers.type == 'kml'){
+					kml = new google.maps.KmlLayer(layers.url, layers);
+				}
+			});
+		},
+		Streetview: function(streetview){
+			pano = new google.maps.StreetViewPanorama($(streetview.id), streetview);
+			$.googlemaps.map.setStreetView(pano);
+		},
 		Directions: function(directions){
 			var DirectionsService= new google.maps.DirectionsService();
 			var DirectionsDisplay = new google.maps.DirectionsRenderer();
+			
 			// Set modes and Units
 			if(directions.travelMode == 'DRIVING'){
 				directions.travelMode = google.maps.DirectionsTravelMode.DRIVING;
@@ -189,28 +245,33 @@
 				directions.travelMode = google.maps.DirectionsTravelMode.BICYCLING;
 			}else if(directions.travelMode == 'WALKING'){
 				directions.travelMode = google.maps.DirectionsTravelMode.WALKING;
+			}else{
+				directions.travelMode = google.maps.DirectionsTravelMode.DRIVING;
 			}
+			
 			if(directions.unitSystem == 'IMPERIAL'){
 				directions.unitSystem = google.maps.DirectionsUnitSystem.IMPERIAL;
 			}else if(directions.unitSystem == 'METRIC'){
 				directions.unitSystem = google.maps.DirectionsUnitSystem.METRIC;
+			}else{
+				directions.unitSystem = google.maps.DirectionsUnitSystem.IMPERIAL;
 			}
+			
 			DirectionsDisplay.setMap($.googlemaps.map);
+			
 			// Set output panel details
 			if(directions.display){
-				DirectionsDisplay.setPanel($(directions.display.id));
-				$(directions.display.id).hide();
+				DirectionsDisplay.setPanel($(directions.display)[0]);
 			}
-			DirectionsService.route(directions, function(result, status){
+			var route = {
+				origin: directions.origin,
+				destination: directions.destination,
+				travelMode: directions.travelMode,
+				unitSystem: directions.unitSystem
+			}
+			DirectionsService.route(route, function(response, status){
 				if(status == google.maps.DirectionsStatus.OK){
 					DirectionsDisplay.setDirections(response);
-					if(directions.display){
-						var mapDiv = $.googlemaps.map.getDiv();
-						mapDiv.width(function(i, w){
-							return (w - directions.display.width);
-						});
-						$(directions.display.id).show();
-					}
 				}
 			});
 		},

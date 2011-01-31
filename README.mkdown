@@ -5,16 +5,18 @@
 * Maps:			Done, tested.
 * Markers:		Done, tested.
 * InfoWindows:	Done, tested.
-* Polylines:	Done,
-* Polygons:		Done,
-* Rectangles:	Done,
+* Polylines:	Done, tested.
+* Polygons:		Done, tested.
+* Rectangles:	Done, broken, problems with LatLngBounds - needs more research
 * Circles:		Done,
-* Layers:		Todo,
-* Streetview:	Todo,
-* Directions:	Todo,
+* Layers:		Done, except fusion!
+* Streetview:	Done,
+* Directions:	Done, tested.
 
 
 ##Refactor Todo's:
 
-* Pull out repetative coords creation into Coords function:		Part done,
-* Directions show markers!
+* Pull out repetative coords creation into Coords function:	Part done.
+* Directions: Show markers?
+* Directions: Add waypoints?
+* Add support for more advanced options.

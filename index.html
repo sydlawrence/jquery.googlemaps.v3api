@@ -8,11 +8,12 @@
 	<script type="text/javascript" src="jquery/jquery.googlemaps.js"></script>
 	<style>
 		body {font: 12px Verdana;}
-		#map {height: 300px;}
+		#map {height: 500px;}
 	</style>
 </head>
 <body>
 	<div id="map"></div>
+	<div id="dir"></div>
 	<div id="info">This is test info!</div>
     <script type="text/javascript">
 		o = {
@@ -21,18 +22,23 @@
 			zoom: 14,
 			type: 'SATELLITE', // ROADMAP, HYBRID, SATELLITE, TERRAIN
 			// Markers Options
-			markers: [
-				{
-					// Required
-					position: [52.257347,0.054988],
-					title: 'This is a test marker',
-					// Optional
-					clickable: true,
-					dragable: false,
-					// Info Window
-					info: '#info'
-				}
-			]
+	rectangles: [
+		{
+			// Required
+			bounds: [
+				[52.257347,0.054988],
+				[51.257347,0.054666]
+			],
+			fillColor: '#ff0000',
+			fillOpacity: 0.5,
+			strokeColor: '#00ff00',
+			strokeOpacity: 1,
+			strokeWeight: 2,
+			// Optional
+			clickable: true
+		}
+	]
+			
 		};
 		$(document).ready(function(){
 			$('#map').googlemaps(o);
