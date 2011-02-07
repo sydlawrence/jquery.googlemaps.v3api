@@ -17,8 +17,9 @@
 		if($.isArray(o.center)){
 			o.center = $.googlemaps.Coords(o.center);
 		}else{
-			var results = $.googlemaps.Geocode(o.center);
-			o.center = results.geometry.location;
+			$.googlemaps.Geocode(o.center);
+			o.center = $.googlemaps.results[0]; // This isn't good enough! What about multiple results?
+			console.log(o.center);
 		}
 		// Initiate a Google Map for each element passed
 		return this.each(function(){
@@ -100,16 +101,29 @@
 				$.googlemaps.Directions(o.directions);
 			}
 		},
+		/**
+		 * @param string {string} Address to Geocode
+		 */
 		Geocode: function(string){
-			$.googlemaps.geocoder = new google.maps.Geocoder();
-			var output;
-			$.googlemaps.geocoder.geocode({address: string}, function(results, status){
+			var geocoder = new google.maps.Geocoder();
+			var nonstop = true
+			var output = [];
+			geocoder.geocode({address: string}, function(results, status){
 				if(status == google.maps.GeocoderStatus.OK){
-					output = results;
+					$.each(results, function(i, v){
+						output[i] = results[i];
+					});
+					nonstop = false;
 				}else{
-					alert("Geocode was not successful for the following reason: " + status);
+					$.googlemaps.results = status;
 				}
 			});
+			/*
+			while(output.length < 1){
+				continue;
+			}*/
+			console.log(output);
+			return output;
 		},
 		/**
 		 * @param array {array} Array of one set of coords
@@ -152,11 +166,16 @@
 				if($.isArray(marker.position)){
 					marker.position = $.googlemaps.LatLng(marker.position);
 				}else{
-					console.log(marker);
 					var results = $.googlemaps.Geocode(marker.position);
-					marker.position = results.geometry.location;
+					marker.position = $.googlemaps.results[0]; // This isn't good enough! What about multiple results?
 				}
 				marker.map = $.googlemaps.map;
+				if(marker.icon && typeof marker.icon != 'string'){
+					marker.icon = $.googlemaps.MarkerImage(marker.icon);
+				}
+				if(marker.shadow && typeof marker.shadow != 'string'){
+					marker.shadow = $.googlemaps.MarkerImage(marker.shadow);
+				}
 				var marked = new google.maps.Marker(marker);
 				if(marker.info){
 					if((marker.info).match('^#')){
@@ -174,6 +193,13 @@
 					});
 				}
 			});
+		},
+		MarkerImage: function(o){
+			if(o.size) o.size = google.maps.Size(o.size[0], o.size[1], o.siz[3], o.size[3]);
+			else o.size = google.maps.Size(o.size[0], o.size[1]);
+			if(o.anchor) o.anchor = google.maps.Point(o.anchor[0], o.anchor[1]);
+			if(o.origin) o.origin = google.maps.Point(o.origin[0], o.origin[1]);
+			return $.googlemaps.MarkerImage(o);
 		},
 		Polyline: function(polylines){
 			$.each(polylines, function(i, polyline){

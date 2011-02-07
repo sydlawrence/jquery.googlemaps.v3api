@@ -6,21 +6,21 @@ we're all used to.
 
 ##Current status:
 
-* Maps:			Done, tested LatLng.
-* Markers:		Done, tested LatLng.
-* InfoWindows:	Done, tested LatLng.
-* Polylines:	Done, tested LatLng.
-* Polygons:		Done, tested LatLng.
+* Maps:			Done, tested LatLng, untested Geocode.
+* Markers:		Done, tested LatLng, untested Geocode.
+* MarkerImage:	Done, untested.
+* InfoWindows:	Done, tested.
+* Polylines:	Done, tested LatLng, untested Geocode.
+* Polygons:		Done, tested LatLng, untested Geocode.
 * Rectangles:	Done, broken, problems with LatLngBounds - needs more research
 * Circles:		Done, untested
 * Layers:		Done, except fusion, untested
 * Streetview:	Done, untested
-* Directions:	Done, tested.
+* Directions:	Done, tested LatLng, untested Geocode.
 
 ##Issues so far:
 
-* Geocoding seems to refuse to pass the results object outside of the callback
-  function. Am I missing something??
+* Geocoding: Need to rip this apart as it's asynchronous.
 * Need to sort out the LatLngBounds function, is returning correct data, yet
   Rectangle just **will not** receive it! Keeps saying wrong data type?
 

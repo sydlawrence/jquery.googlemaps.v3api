@@ -13,6 +13,19 @@ o = {
 			// Optional
 			icon: '',
 			shadow: '',
+			// Or
+			icon: {
+				url: '',
+				size: [0,0,'px'],
+				origin: [0,0],
+				anchor: [0,0]
+			},
+			shadow: {
+				url: '',
+				size: [0,0,'px'],
+				origin: [0,0],
+				anchor: [0,0]
+			},
 			clickable: true,
 			dragable: false,
 			// Info Window
